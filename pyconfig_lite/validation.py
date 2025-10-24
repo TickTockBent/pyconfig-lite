@@ -8,8 +8,8 @@ try:
     PYDANTIC_AVAILABLE = True
 except ImportError:  # pragma: no cover
     PYDANTIC_AVAILABLE = False
-    BaseModel = object  # type: ignore
-    ValidationError = Exception  # type: ignore
+    BaseModel = object  # noqa: F811
+    ValidationError = Exception  # noqa: F811
 
 T = TypeVar('T', bound='BaseModel')
 
