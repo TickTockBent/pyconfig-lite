@@ -1,17 +1,17 @@
 """
 Schema validation support for pyconfig-lite using Pydantic.
 """
-from typing import Any, Dict, Optional, Type, TypeVar, cast
+from typing import Any, Dict, Type, TypeVar, cast
 
 try:
     from pydantic import BaseModel, ValidationError
     PYDANTIC_AVAILABLE = True
 except ImportError:
     PYDANTIC_AVAILABLE = False
-    BaseModel = object  # type: ignore[misc,assignment]
-    ValidationError = Exception  # type: ignore[misc,assignment]
+    BaseModel = object  # type: ignore[misc]
+    ValidationError = Exception  # type: ignore[misc]
 
-T = TypeVar('T', bound=BaseModel)
+T = TypeVar('T', bound='BaseModel')
 
 
 class ConfigValidationError(Exception):

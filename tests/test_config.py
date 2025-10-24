@@ -623,6 +623,30 @@ class TestConfig(unittest.TestCase):
             Config(yaml_path)
         self.assertIn('Failed to parse YAML file', str(context.exception))
 
+    def test_load_dotenv_default_path(self) -> None:
+        """Test loading .env from default path (.env)."""
+        # Create .env in current directory
+        dotenv_default = '.env'
+        with open(dotenv_default, 'w') as f:
+            f.write('DEFAULT_ENV_TEST=from_default_dotenv\n')
+
+        # Clear from environment
+        if 'DEFAULT_ENV_TEST' in os.environ:
+            del os.environ['DEFAULT_ENV_TEST']
+
+        try:
+            # Load with load_dotenv=True but no path (should use .env)
+            Config(self.json_config_path, load_dotenv=True)
+
+            # Verify it loaded from .env
+            self.assertEqual(os.environ.get('DEFAULT_ENV_TEST'), 'from_default_dotenv')
+        finally:
+            # Cleanup
+            if os.path.exists(dotenv_default):
+                os.remove(dotenv_default)
+            if 'DEFAULT_ENV_TEST' in os.environ:
+                del os.environ['DEFAULT_ENV_TEST']
+
     def test_dotenv_file_read_error(self) -> None:
         """Test handling of .env file read errors."""
         # Create an .env file with invalid encoding
