@@ -426,6 +426,12 @@ class TestConfig(unittest.TestCase):
 
     def test_env_prefix_case_sensitivity(self) -> None:
         """Test that environment prefix matching is case-sensitive."""
+        import platform
+
+        # Skip on Windows - environment variables are case-insensitive on Windows
+        if platform.system() == 'Windows':
+            self.skipTest("Environment variables are case-insensitive on Windows")
+
         os.environ['MYAPP_PORT'] = '9000'
         os.environ['myapp_PORT'] = '8000'
 
@@ -649,6 +655,13 @@ class TestConfig(unittest.TestCase):
 
     def test_dotenv_file_read_error(self) -> None:
         """Test handling of .env file read errors."""
+        import sys
+        import platform
+
+        # Skip on Windows - chmod doesn't work the same way
+        if platform.system() == 'Windows':
+            self.skipTest("File permission tests don't work on Windows")
+
         # Create an .env file with invalid encoding
         dotenv_path = os.path.join(self.temp_dir.name, 'bad.env')
 

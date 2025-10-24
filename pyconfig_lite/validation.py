@@ -6,10 +6,10 @@ from typing import Any, Dict, Type, TypeVar, cast
 try:
     from pydantic import BaseModel, ValidationError
     PYDANTIC_AVAILABLE = True
-except ImportError:
+except ImportError:  # pragma: no cover
     PYDANTIC_AVAILABLE = False
-    BaseModel = object  # type: ignore[misc]
-    ValidationError = Exception  # type: ignore[misc]
+    BaseModel = object  # type: ignore
+    ValidationError = Exception  # type: ignore
 
 T = TypeVar('T', bound='BaseModel')
 
