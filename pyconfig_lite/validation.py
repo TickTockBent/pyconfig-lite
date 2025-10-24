@@ -8,10 +8,10 @@ try:
     PYDANTIC_AVAILABLE = True
 except ImportError:
     PYDANTIC_AVAILABLE = False
-    BaseModel = object  # type: ignore
-    ValidationError = Exception  # type: ignore
+    BaseModel = object  # type: ignore[misc,assignment]
+    ValidationError = Exception  # type: ignore[misc,assignment]
 
-T = TypeVar('T', bound='BaseModel')
+T = TypeVar('T', bound=BaseModel)
 
 
 class ConfigValidationError(Exception):
@@ -56,7 +56,7 @@ def validate_config(config_data: Dict[str, Any], schema: Type[T]) -> T:
         )
 
     try:
-        return schema(**config_data)
+        return schema(**config_data)  # type: ignore[no-any-return]
     except ValidationError as e:
         raise ConfigValidationError(f"Configuration validation failed: {e}") from e
 

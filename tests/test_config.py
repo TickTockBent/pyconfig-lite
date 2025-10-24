@@ -526,6 +526,127 @@ class TestConfig(unittest.TestCase):
 
         self.assertEqual(os.environ['CONNECTION_STRING'], 'server=localhost;user=admin')
 
+    def test_yaml_load_error_without_pyyaml(self) -> None:
+        """Test error handling when trying to load YAML without PyYAML installed."""
+        import sys
+        import importlib
+
+        # Save original yaml module
+        yaml_module = sys.modules.get('yaml')
+
+        try:
+            # Remove yaml from sys.modules to simulate it not being installed
+            if 'yaml' in sys.modules:
+                del sys.modules['yaml']
+
+            # Create a YAML file
+            yaml_path = os.path.join(self.temp_dir.name, 'test.yml')
+            with open(yaml_path, 'w') as f:
+                f.write('test: value\n')
+
+            # Mock importlib.util.find_spec to return None for yaml
+            original_find_spec = importlib.util.find_spec
+
+            def mock_find_spec(name: str) -> None:
+                if name == 'yaml':
+                    return None
+                return original_find_spec(name)
+
+            importlib.util.find_spec = mock_find_spec  # type: ignore[assignment]
+
+            # This should raise an ImportError
+            with self.assertRaises(ValueError) as context:
+                Config(yaml_path)
+            self.assertIn('PyYAML is required', str(context.exception))
+
+        finally:
+            # Restore
+            importlib.util.find_spec = original_find_spec  # type: ignore[assignment]
+            if yaml_module is not None:
+                sys.modules['yaml'] = yaml_module
+
+    def test_toml_load_error_without_toml(self) -> None:
+        """Test error handling when trying to load TOML without toml installed."""
+        import sys
+        import importlib
+
+        # Save original toml module
+        toml_module = sys.modules.get('toml')
+
+        try:
+            # Remove toml from sys.modules
+            if 'toml' in sys.modules:
+                del sys.modules['toml']
+
+            # Create a TOML file
+            toml_path = os.path.join(self.temp_dir.name, 'test.toml')
+            with open(toml_path, 'w') as f:
+                f.write('[test]\nvalue = "data"\n')
+
+            # Mock importlib.util.find_spec to return None for toml
+            original_find_spec = importlib.util.find_spec
+
+            def mock_find_spec(name: str) -> None:
+                if name == 'toml':
+                    return None
+                return original_find_spec(name)
+
+            importlib.util.find_spec = mock_find_spec  # type: ignore[assignment]
+
+            # This should raise an ImportError
+            with self.assertRaises(ValueError) as context:
+                Config(toml_path)
+            self.assertIn('toml is required', str(context.exception))
+
+        finally:
+            # Restore
+            importlib.util.find_spec = original_find_spec  # type: ignore[assignment]
+            if toml_module is not None:
+                sys.modules['toml'] = toml_module
+
+    def test_malformed_yaml_file(self) -> None:
+        """Test handling of malformed YAML file."""
+        try:
+            import yaml
+            yaml_available = True
+        except ImportError:
+            yaml_available = False
+
+        if not yaml_available:
+            self.skipTest("PyYAML not installed")
+
+        yaml_path = os.path.join(self.temp_dir.name, 'bad.yml')
+        with open(yaml_path, 'w') as f:
+            f.write('bad: yaml: content:\n  - invalid\n  unparseable')
+
+        with self.assertRaises(ValueError) as context:
+            Config(yaml_path)
+        self.assertIn('Failed to parse YAML file', str(context.exception))
+
+    def test_dotenv_file_read_error(self) -> None:
+        """Test handling of .env file read errors."""
+        # Create an .env file with invalid encoding
+        dotenv_path = os.path.join(self.temp_dir.name, 'bad.env')
+
+        # Create a file and immediately make it unreadable
+        with open(dotenv_path, 'w') as f:
+            f.write('TEST=value\n')
+
+        # Make it unreadable
+        import os as os_module
+        os_module.chmod(dotenv_path, 0o000)
+
+        try:
+            with self.assertRaises(ValueError) as context:
+                Config(self.json_config_path, load_dotenv=True, dotenv_path=dotenv_path)
+            self.assertIn('Error loading .env file', str(context.exception))
+        finally:
+            # Restore permissions for cleanup
+            try:
+                os_module.chmod(dotenv_path, 0o644)
+            except:
+                pass
+
 
 if __name__ == '__main__':
     unittest.main()

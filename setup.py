@@ -33,6 +33,14 @@ setup(
     extras_require={
         "yaml": ["PyYAML"],
         "toml": ["toml"],
-        "all": ["PyYAML", "toml"],
+        "validation": ["pydantic>=2.0"],
+        "all": ["PyYAML", "toml", "pydantic>=2.0"],
+        "dev": [
+            "pytest>=7.0",
+            "pytest-cov>=4.0",
+            "PyYAML",
+            "toml",
+            "pydantic>=2.0",
+        ],
     },
 )
