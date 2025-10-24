@@ -1,9 +1,9 @@
 """
-Basic usage example for pyconfig-lite.
+Basic usage example for liteconfig_py.
 """
 import os
 import json
-from pyconfig_lite import Config
+from liteconfig_py import Config
 
 # Create example configuration files
 def create_example_configs():

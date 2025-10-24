@@ -1,15 +1,78 @@
 [build-system]
-requires = ["setuptools>=42", "wheel"]
+requires = ["setuptools>=45", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[project]
+name = "liteconfig_py"
+version = "0.2.0"
+description = "A minimal, flexible Python configuration loader with environment variable support"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "TickTockBent", email = "benttick@gmail.com"}
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Typing :: Typed",
+]
+
+[project.optional-dependencies]
+yaml = ["PyYAML"]
+toml = ["toml"]
+validation = ["pydantic>=2.0"]
+all = ["PyYAML", "toml", "pydantic>=2.0"]
+dev = [
+    "pytest>=7.0",
+    "pytest-cov>=4.0",
+    "mypy>=1.0",
+    "flake8>=6.0",
+    "PyYAML",
+    "toml",
+    "pydantic>=2.0",
+]
 
 [tool.black]
 line-length = 88
-target-version = ["py36", "py37", "py38", "py39", "py310"]
+target-version = ["py38", "py39", "py310", "py311", "py312"]
 include = '\.pyi?$'
 
 [tool.isort]
 profile = "black"
 multi_line_output = 3
 
-[tool.pytest]
+[tool.pytest.ini_options]
+minversion = "7.0"
+addopts = "-ra -q --strict-markers --cov=liteconfig_py --cov-report=term-missing --cov-report=html --cov-report=xml --cov-fail-under=95"
 testpaths = ["tests"]
+
+[tool.coverage.run]
+source = ["liteconfig_py"]
+omit = ["tests/*", "setup.py"]
+
+[tool.coverage.report]
+precision = 2
+show_missing = true
+skip_covered = false
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+    "except ImportError:",
+    "if not PYDANTIC_AVAILABLE:",
+]
+
+[tool.coverage.html]
+directory = "htmlcov"

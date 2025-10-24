@@ -1,3 +1,3 @@
 """
-Test package for pyconfig-lite.
+Test package for liteconfig_py.
 """
