@@ -3,7 +3,7 @@
 [![CI](https://github.com/TickTockBent/liteconfig_py/actions/workflows/ci.yml/badge.svg)](https://github.com/TickTockBent/liteconfig_py/actions/workflows/ci.yml)
 [![codecov](https://codecov.io/gh/TickTockBent/liteconfig_py/branch/main/graph/badge.svg)](https://codecov.io/gh/TickTockBent/liteconfig_py)
 [![Python Version](https://img.shields.io/pypi/pyversions/liteconfig_py)](https://pypi.org/project/liteconfig_py/)
-[![PyPI version](https://badge.fury.io/py/liteconfig_py.svg)](https://badge.fury.io/py/liteconfig_py)
+[![PyPI version](https://badge.fury.io/py/liteconfig-py.svg)](https://badge.fury.io/py/liteconfig-py)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
